@@ -1,29 +1,53 @@
+import { useCallback } from "react";
+import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
 import AudioPlayer from "./components/AudioPlayer";
-import { initialSummary, mockTracks } from "./data/mockLibrary";
 import { usePlayback } from "./hooks/usePlayback";
-
-const track = mockTracks[0];
+import { useReviewSession } from "./hooks/useReviewSession";
+import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
+import type { Decision } from "./types";
 
 export default function App() {
+  const { currentTrack, summary, decide } = useReviewSession();
   const { currentTime, isPlaying, seek, toggle } = usePlayback(
-    track.duration,
-    track.id,
+    currentTrack?.duration ?? 0,
+    currentTrack?.id ?? "no-track",
   );
+
+  const handleDecide = useCallback(
+    (decision: Decision) => {
+      if (!currentTrack) return;
+      decide(decision);
+    },
+    [currentTrack, decide],
+  );
+
+  useReviewShortcuts({
+    enabled: Boolean(currentTrack),
+    onDecide: handleDecide,
+    onTogglePlayback: toggle,
+  });
 
   return (
     <div className="flex min-h-full flex-col">
-      <Header reviewed={initialSummary.reviewed} total={initialSummary.total} />
+      <Header reviewed={summary.reviewed} total={summary.total} />
       <main className="flex flex-1 flex-col items-center justify-center gap-14 px-6 pb-16">
-        <TrackInfo track={track} />
-        <AudioPlayer
-          currentTime={currentTime}
-          duration={track.duration}
-          isPlaying={isPlaying}
-          onSeek={seek}
-          onToggle={toggle}
-        />
+        {currentTrack ? (
+          <>
+            <TrackInfo track={currentTrack} />
+            <AudioPlayer
+              currentTime={currentTime}
+              duration={currentTrack.duration}
+              isPlaying={isPlaying}
+              onSeek={seek}
+              onToggle={toggle}
+            />
+            <DecisionControls onDecide={handleDecide} />
+          </>
+        ) : (
+          <p className="text-sm font-medium text-muted">Library reviewed</p>
+        )}
       </main>
     </div>
   );
