@@ -3,6 +3,7 @@ import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
 import AudioPlayer from "./components/AudioPlayer";
+import LibraryStats from "./components/LibraryStats";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
@@ -49,6 +50,7 @@ export default function App() {
           <p className="text-sm font-medium text-muted">Library reviewed</p>
         )}
       </main>
+      <LibraryStats summary={summary} />
     </div>
   );
 }
