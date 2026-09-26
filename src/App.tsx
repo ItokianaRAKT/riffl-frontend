@@ -1,9 +1,12 @@
+import { useCallback } from "react";
 import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
 import AudioPlayer from "./components/AudioPlayer";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
+import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
+import type { Decision } from "./types";
 
 export default function App() {
   const { currentTrack, summary, decide } = useReviewSession();
@@ -11,6 +14,20 @@ export default function App() {
     currentTrack?.duration ?? 0,
     currentTrack?.id ?? "no-track",
   );
+
+  const handleDecide = useCallback(
+    (decision: Decision) => {
+      if (!currentTrack) return;
+      decide(decision);
+    },
+    [currentTrack, decide],
+  );
+
+  useReviewShortcuts({
+    enabled: Boolean(currentTrack),
+    onDecide: handleDecide,
+    onTogglePlayback: toggle,
+  });
 
   return (
     <div className="flex min-h-full flex-col">
@@ -26,7 +43,7 @@ export default function App() {
               onSeek={seek}
               onToggle={toggle}
             />
-            <DecisionControls onDecide={decide} />
+            <DecisionControls onDecide={handleDecide} />
           </>
         ) : (
           <p className="text-sm font-medium text-muted">Library reviewed</p>
