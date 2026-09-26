@@ -4,13 +4,17 @@ import { formatTime } from "../utils/format";
 interface AudioPlayerProps {
   currentTime: number;
   duration: number;
+  isPlaying: boolean;
   onSeek: (time: number) => void;
+  onToggle: () => void;
 }
 
 export default function AudioPlayer({
   currentTime,
   duration,
+  isPlaying,
   onSeek,
+  onToggle,
 }: AudioPlayerProps) {
   const barRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +52,33 @@ export default function AudioPlayer({
           <span>-{formatTime(remaining)}</span>
         </div>
       </div>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-label={isPlaying ? "Pause" : "Play"}
+        className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-petroleum text-white transition-colors duration-150 hover:bg-[#0f3d4e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:scale-95"
+      >
+        {isPlaying ? (
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            className="h-6 w-6"
+          >
+            <rect x="6.5" y="5" width="4" height="14" rx="1.2" />
+            <rect x="13.5" y="5" width="4" height="14" rx="1.2" />
+          </svg>
+        ) : (
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            className="ml-1 h-6 w-6"
+          >
+            <path d="M8 5.13v13.74a.5.5 0 0 0 .76.43l10.72-6.87a.5.5 0 0 0 0-.86L8.76 4.7a.5.5 0 0 0-.76.43Z" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

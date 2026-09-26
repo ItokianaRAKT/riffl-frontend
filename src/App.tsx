@@ -7,7 +7,10 @@ import { usePlayback } from "./hooks/usePlayback";
 const track = mockTracks[0];
 
 export default function App() {
-  const { currentTime, seek } = usePlayback(track.duration, track.id);
+  const { currentTime, isPlaying, seek, toggle } = usePlayback(
+    track.duration,
+    track.id,
+  );
 
   return (
     <div className="flex min-h-full flex-col">
@@ -17,7 +20,9 @@ export default function App() {
         <AudioPlayer
           currentTime={currentTime}
           duration={track.duration}
+          isPlaying={isPlaying}
           onSeek={seek}
+          onToggle={toggle}
         />
       </main>
     </div>
