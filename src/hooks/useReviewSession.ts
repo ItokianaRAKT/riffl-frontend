@@ -12,6 +12,7 @@ interface ReviewSession {
   decide: (decision: Decision) => void;
   goBack: () => void;
   goForward: () => void;
+  reset: () => void;
 }
 
 export function useReviewSession(): ReviewSession {
@@ -36,6 +37,11 @@ export function useReviewSession(): ReviewSession {
 
   const goForward = useCallback(() => {
     setCursor((previous) => Math.min(mockTracks.length, previous + 1));
+  }, []);
+
+  const reset = useCallback(() => {
+    setCursor(0);
+    setDecisions([]);
   }, []);
 
   const summary = useMemo<LibrarySummary>(() => {
@@ -63,5 +69,6 @@ export function useReviewSession(): ReviewSession {
     decide,
     goBack,
     goForward,
+    reset,
   };
 }

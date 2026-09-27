@@ -1,6 +1,6 @@
 interface HeaderProps {
-  reviewed: number;
-  total: number;
+  reviewed?: number;
+  total?: number;
 }
 
 export default function Header({ reviewed, total }: HeaderProps) {
@@ -9,9 +9,11 @@ export default function Header({ reviewed, total }: HeaderProps) {
       <span className="text-4xl leading-none font-bold tracking-[-0.03em] text-ink sm:text-5xl">
         Riffl
       </span>
-      <p className="text-sm font-medium text-ink tabular-nums sm:text-base">
-        {reviewed} / {total} tracks reviewed
-      </p>
+      {reviewed !== undefined && total !== undefined ? (
+        <p className="text-sm font-medium text-ink tabular-nums sm:text-base">
+          {reviewed} / {total} tracks reviewed
+        </p>
+      ) : null}
     </header>
   );
 }
