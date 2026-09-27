@@ -35,13 +35,16 @@ const OPTIONS: Option[] = [
 
 export default function DecisionControls({ onDecide }: DecisionControlsProps) {
   return (
-    <div className="grid w-full max-w-2xl grid-cols-3 gap-4 px-6 sm:gap-5">
+    <div className="grid w-full max-w-2xl grid-cols-1 gap-3 px-6 sm:grid-cols-3 sm:gap-5">
       {OPTIONS.map((option) => (
-        <div key={option.decision} className="flex flex-col items-center gap-3">
+        <div
+          key={option.decision}
+          className="flex items-center justify-center gap-4 sm:flex-col sm:gap-3"
+        >
           <button
             type="button"
             onClick={() => onDecide(option.decision)}
-            className={`h-14 w-full cursor-pointer rounded-lg text-sm font-bold tracking-[0.1em] uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px ${option.className}`}
+            className={`h-14 flex-1 cursor-pointer rounded-lg text-sm font-bold tracking-[0.1em] uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px sm:w-full sm:flex-none ${option.className}`}
           >
             {option.label}
           </button>
