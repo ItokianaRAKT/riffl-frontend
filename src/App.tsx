@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
+import TrackNavigation from "./components/TrackNavigation";
 import AudioPlayer from "./components/AudioPlayer";
 import LibraryStats from "./components/LibraryStats";
 import { usePlayback } from "./hooks/usePlayback";
@@ -10,7 +11,8 @@ import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
 import type { Decision } from "./types";
 
 export default function App() {
-  const { currentTrack, summary, decide } = useReviewSession();
+  const { currentTrack, summary, canGoBack, canGoForward, decide, goBack, goForward } =
+    useReviewSession();
   const { currentTime, isPlaying, seek, toggle } = usePlayback(
     currentTrack?.duration ?? 0,
     currentTrack?.id ?? "no-track",
@@ -36,7 +38,14 @@ export default function App() {
       <main className="flex flex-1 flex-col items-center justify-center gap-14 px-6 pb-16">
         {currentTrack ? (
           <>
-            <TrackInfo track={currentTrack} />
+            <TrackNavigation
+              canGoBack={canGoBack}
+              canGoForward={canGoForward}
+              onBack={goBack}
+              onForward={goForward}
+            >
+              <TrackInfo track={currentTrack} />
+            </TrackNavigation>
             <AudioPlayer
               currentTime={currentTime}
               duration={currentTrack.duration}
