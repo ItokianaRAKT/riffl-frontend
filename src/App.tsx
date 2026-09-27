@@ -36,6 +36,9 @@ export default function App() {
     onNextTrack: goForward,
   });
 
+  const handleReviewQueue = useCallback(() => {}, []);
+  const handleFinishCleanup = useCallback(() => {}, []);
+
   const isComplete = !currentTrack;
   const displaySummary = isComplete ? finalSummary : summary;
 
@@ -66,7 +69,11 @@ export default function App() {
             <DecisionControls onDecide={handleDecide} />
           </>
         ) : (
-          <ReviewComplete summary={displaySummary} />
+          <ReviewComplete
+            summary={displaySummary}
+            onReviewQueue={handleReviewQueue}
+            onFinish={handleFinishCleanup}
+          />
         )}
       </main>
       <LibraryStats summary={displaySummary} />
