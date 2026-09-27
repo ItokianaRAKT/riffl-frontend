@@ -65,7 +65,7 @@ export default function App() {
         reviewed={isReviewing ? displaySummary.reviewed : undefined}
         total={isReviewing ? displaySummary.total : undefined}
       />
-      <main className="flex flex-1 flex-col items-center justify-center gap-14 px-6 pb-16">
+      <main className="flex flex-1 flex-col items-center justify-center px-6 gap-14 sm:gap-16 lg:gap-20 xl:gap-24">
         {screen === "empty" ? (
           <InitialEmptyState onChooseFolder={handleChooseFolder} />
         ) : currentTrack ? (
