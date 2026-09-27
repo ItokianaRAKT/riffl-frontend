@@ -82,3 +82,11 @@ export const initialSummary: LibrarySummary = {
   toDelete: 47,
   skipped: 44,
 };
+
+export const finalSummary: LibrarySummary = {
+  total: 843,
+  reviewed: 843,
+  kept: 612,
+  toDelete: 47,
+  skipped: 184,
+};
