@@ -30,6 +30,8 @@ export default function App() {
     enabled: Boolean(currentTrack),
     onDecide: handleDecide,
     onTogglePlayback: toggle,
+    onPreviousTrack: goBack,
+    onNextTrack: goForward,
   });
 
   return (
