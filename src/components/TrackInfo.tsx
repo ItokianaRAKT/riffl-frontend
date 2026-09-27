@@ -7,7 +7,7 @@ interface TrackInfoProps {
 
 export default function TrackInfo({ track }: TrackInfoProps) {
   return (
-    <section className="px-6 text-center">
+    <section className="min-w-0 flex-1 px-6 text-center">
       <h1 className="text-[30px] leading-[1.12] font-semibold tracking-[-0.025em] text-ink sm:text-4xl lg:text-[42px]">
         {track.title}
       </h1>

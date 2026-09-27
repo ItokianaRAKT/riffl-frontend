@@ -5,8 +5,13 @@ import { initialSummary, mockTracks } from "../data/mockLibrary";
 interface ReviewSession {
   currentTrack: Track | null;
   summary: LibrarySummary;
-  decidedCount: number;
+  index: number;
+  queueLength: number;
+  canGoBack: boolean;
+  canGoForward: boolean;
   decide: (decision: Decision) => void;
+  goBack: () => void;
+  goForward: () => void;
 }
 
 export function useReviewSession(): ReviewSession {
@@ -20,16 +25,26 @@ export function useReviewSession(): ReviewSession {
         next[cursor] = decision;
         return next;
       });
-      setCursor((previous) => previous + 1);
+      setCursor((previous) => Math.min(mockTracks.length, previous + 1));
     },
     [cursor],
   );
 
+  const goBack = useCallback(() => {
+    setCursor((previous) => Math.max(0, previous - 1));
+  }, []);
+
+  const goForward = useCallback(() => {
+    setCursor((previous) => Math.min(mockTracks.length, previous + 1));
+  }, []);
+
   const summary = useMemo<LibrarySummary>(() => {
-    const decided = decisions.slice(0, cursor);
+    const decided = decisions
+      .slice(0, cursor)
+      .filter((decision): decision is Decision => Boolean(decision));
     return {
       total: initialSummary.total,
-      reviewed: initialSummary.reviewed + cursor,
+      reviewed: initialSummary.reviewed + decided.length,
       kept: initialSummary.kept + decided.filter((d) => d === "keep").length,
       toDelete:
         initialSummary.toDelete + decided.filter((d) => d === "delete").length,
@@ -41,7 +56,12 @@ export function useReviewSession(): ReviewSession {
   return {
     currentTrack: cursor < mockTracks.length ? mockTracks[cursor] : null,
     summary,
-    decidedCount: cursor,
+    index: cursor,
+    queueLength: mockTracks.length,
+    canGoBack: cursor > 0,
+    canGoForward: cursor < mockTracks.length,
     decide,
+    goBack,
+    goForward,
   };
 }
