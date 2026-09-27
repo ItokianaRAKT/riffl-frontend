@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
@@ -6,6 +6,7 @@ import TrackNavigation from "./components/TrackNavigation";
 import AudioPlayer from "./components/AudioPlayer";
 import LibraryStats from "./components/LibraryStats";
 import ReviewComplete from "./components/ReviewComplete";
+import InitialEmptyState from "./components/InitialEmptyState";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
@@ -13,8 +14,17 @@ import { finalSummary } from "./data/mockLibrary";
 import type { Decision } from "./types";
 
 export default function App() {
-  const { currentTrack, summary, canGoBack, canGoForward, decide, goBack, goForward } =
-    useReviewSession();
+  const {
+    currentTrack,
+    summary,
+    canGoBack,
+    canGoForward,
+    decide,
+    goBack,
+    goForward,
+    reset,
+  } = useReviewSession();
+  const [screen, setScreen] = useState<"reviewing" | "empty">("reviewing");
   const { currentTime, isPlaying, seek, toggle } = usePlayback(
     currentTrack?.duration ?? 0,
     currentTrack?.id ?? "no-track",
@@ -28,8 +38,12 @@ export default function App() {
     [currentTrack, decide],
   );
 
+  const isComplete = !currentTrack;
+  const displaySummary = isComplete ? finalSummary : summary;
+  const isReviewing = screen === "reviewing";
+
   useReviewShortcuts({
-    enabled: Boolean(currentTrack),
+    enabled: isReviewing && Boolean(currentTrack),
     onDecide: handleDecide,
     onTogglePlayback: toggle,
     onPreviousTrack: goBack,
@@ -37,19 +51,24 @@ export default function App() {
   });
 
   const handleReviewQueue = useCallback(() => {}, []);
-  const handleFinishCleanup = useCallback(() => {}, []);
 
-  const isComplete = !currentTrack;
-  const displaySummary = isComplete ? finalSummary : summary;
+  const handleFinishCleanup = useCallback(() => setScreen("empty"), []);
+
+  const handleChooseFolder = useCallback(() => {
+    reset();
+    setScreen("reviewing");
+  }, [reset]);
 
   return (
     <div className="flex min-h-full flex-col">
       <Header
-        reviewed={displaySummary.reviewed}
-        total={displaySummary.total}
+        reviewed={isReviewing ? displaySummary.reviewed : undefined}
+        total={isReviewing ? displaySummary.total : undefined}
       />
       <main className="flex flex-1 flex-col items-center justify-center gap-14 px-6 pb-16">
-        {currentTrack ? (
+        {screen === "empty" ? (
+          <InitialEmptyState onChooseFolder={handleChooseFolder} />
+        ) : currentTrack ? (
           <>
             <TrackNavigation
               canGoBack={canGoBack}
@@ -76,7 +95,7 @@ export default function App() {
           />
         )}
       </main>
-      <LibraryStats summary={displaySummary} />
+      {isReviewing ? <LibraryStats summary={displaySummary} /> : null}
     </div>
   );
 }
