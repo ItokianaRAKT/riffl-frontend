@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
-import TrackNavigation from "./components/TrackNavigation";
 import AudioPlayer from "./components/AudioPlayer";
 import LibraryStats from "./components/LibraryStats";
 import ReviewComplete from "./components/ReviewComplete";
@@ -17,11 +16,7 @@ export default function App() {
   const {
     currentTrack,
     summary,
-    canGoBack,
-    canGoForward,
     decide,
-    goBack,
-    goForward,
     reset,
   } = useReviewSession();
   const [screen, setScreen] = useState<"reviewing" | "empty">("reviewing");
@@ -46,8 +41,6 @@ export default function App() {
     enabled: isReviewing && Boolean(currentTrack),
     onDecide: handleDecide,
     onTogglePlayback: toggle,
-    onPreviousTrack: goBack,
-    onNextTrack: goForward,
   });
 
   const handleReviewQueue = useCallback(() => {}, []);
@@ -70,14 +63,7 @@ export default function App() {
           <InitialEmptyState onChooseFolder={handleChooseFolder} />
         ) : currentTrack ? (
           <>
-            <TrackNavigation
-              canGoBack={canGoBack}
-              canGoForward={canGoForward}
-              onBack={goBack}
-              onForward={goForward}
-            >
-              <TrackInfo track={currentTrack} />
-            </TrackNavigation>
+            <TrackInfo track={currentTrack} />
             <AudioPlayer
               currentTime={currentTime}
               duration={currentTrack.duration}

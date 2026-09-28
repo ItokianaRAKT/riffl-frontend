@@ -1,8 +1,4 @@
-import {
-  useRef,
-  type KeyboardEvent,
-  type MouseEvent,
-} from "react";
+import { useRef, type MouseEvent } from "react";
 import { formatTime } from "../utils/format";
 
 interface AudioPlayerProps {
@@ -34,41 +30,13 @@ export default function AudioPlayer({
     onSeek(ratio * duration);
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    const step = 5;
-    let next: number | null = null;
-
-    if (event.key === "ArrowRight" || event.key === "ArrowUp") {
-      next = currentTime + step;
-    } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
-      next = currentTime - step;
-    } else if (event.key === "Home") {
-      next = 0;
-    } else if (event.key === "End") {
-      next = duration;
-    }
-
-    if (next === null) return;
-    event.preventDefault();
-    event.stopPropagation();
-    onSeek(next);
-  };
-
   return (
     <div className="flex w-full max-w-2xl items-center gap-8 px-6">
       <div className="min-w-0 flex-1">
         <div
           ref={barRef}
-          role="slider"
-          tabIndex={0}
-          aria-label="Track position"
-          aria-valuemin={0}
-          aria-valuemax={Math.round(duration)}
-          aria-valuenow={Math.round(currentTime)}
-          aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
           onClick={handleSeek}
-          onKeyDown={handleKeyDown}
-          className="group relative h-1.5 w-full cursor-pointer rounded-full bg-muted focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-petroleum"
+          className="group relative h-1.5 w-full cursor-pointer rounded-full bg-muted"
         >
           <div
             className="absolute inset-y-0 left-0 rounded-full bg-petroleum"

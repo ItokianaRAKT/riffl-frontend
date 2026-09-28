@@ -5,8 +5,6 @@ interface ShortcutHandlers {
   enabled: boolean;
   onDecide: (decision: Decision) => void;
   onTogglePlayback: () => void;
-  onPreviousTrack: () => void;
-  onNextTrack: () => void;
 }
 
 const DECISION_KEYS: Record<string, Decision> = {
@@ -19,8 +17,6 @@ export function useReviewShortcuts({
   enabled,
   onDecide,
   onTogglePlayback,
-  onPreviousTrack,
-  onNextTrack,
 }: ShortcutHandlers) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,22 +37,10 @@ export function useReviewShortcuts({
       if (key === " ") {
         event.preventDefault();
         onTogglePlayback();
-        return;
-      }
-
-      if (key === "arrowleft") {
-        event.preventDefault();
-        onPreviousTrack();
-        return;
-      }
-
-      if (key === "arrowright") {
-        event.preventDefault();
-        onNextTrack();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [enabled, onDecide, onTogglePlayback, onPreviousTrack, onNextTrack]);
+  }, [enabled, onDecide, onTogglePlayback]);
 }

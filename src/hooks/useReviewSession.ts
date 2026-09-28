@@ -7,11 +7,7 @@ interface ReviewSession {
   summary: LibrarySummary;
   index: number;
   queueLength: number;
-  canGoBack: boolean;
-  canGoForward: boolean;
   decide: (decision: Decision) => void;
-  goBack: () => void;
-  goForward: () => void;
   reset: () => void;
 }
 
@@ -30,14 +26,6 @@ export function useReviewSession(): ReviewSession {
     },
     [cursor],
   );
-
-  const goBack = useCallback(() => {
-    setCursor((previous) => Math.max(0, previous - 1));
-  }, []);
-
-  const goForward = useCallback(() => {
-    setCursor((previous) => Math.min(mockTracks.length, previous + 1));
-  }, []);
 
   const reset = useCallback(() => {
     setCursor(0);
@@ -64,11 +52,7 @@ export function useReviewSession(): ReviewSession {
     summary,
     index: cursor,
     queueLength: mockTracks.length,
-    canGoBack: cursor > 0,
-    canGoForward: cursor < mockTracks.length,
     decide,
-    goBack,
-    goForward,
     reset,
   };
 }
