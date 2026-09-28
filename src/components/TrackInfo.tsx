@@ -29,7 +29,7 @@ export default function TrackInfo({ track }: TrackInfoProps) {
   }, [track.title]);
 
   return (
-    <section className="flex h-44 min-w-0 flex-1 flex-col justify-center gap-6 px-6 text-center">
+    <section className="flex h-44 w-full max-w-3xl flex-col justify-center gap-6 px-6 text-center">
       <h1
         ref={wrapRef}
         title={track.title}
