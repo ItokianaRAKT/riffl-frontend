@@ -88,7 +88,7 @@ export default function AudioPlayer({
         type="button"
         onClick={onToggle}
         aria-label={isPlaying ? "Pause" : "Play"}
-        className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-petroleum text-white transition-colors duration-150 hover:bg-[#0f3d4e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:scale-95"
+        className="grid h-16 w-16 shrink-0 place-items-center -translate-y-4.5 rounded-full bg-petroleum text-white transition-colors duration-150 hover:bg-[#0f3d4e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:scale-95"
       >
         {isPlaying ? (
           <svg
@@ -105,7 +105,7 @@ export default function AudioPlayer({
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-hidden="true"
-            className="ml-1 h-6 w-6"
+            className="ml-1 h-6 w-6 -translate-x-0.5"
           >
             <path d="M8 5.13v13.74a.5.5 0 0 0 .76.43l10.72-6.87a.5.5 0 0 0 0-.86L8.76 4.7a.5.5 0 0 0-.76.43Z" />
           </svg>
