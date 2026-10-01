@@ -4,11 +4,12 @@ import { formatTime } from "../utils/format";
 
 interface TrackInfoProps {
   track: Track;
+  duration?: number;
 }
 
 const MARQUEE_SEPARATOR = "\u00A0\u00B7\u00A0";
 
-export default function TrackInfo({ track }: TrackInfoProps) {
+export default function TrackInfo({ track, duration }: TrackInfoProps) {
   const wrapRef = useRef<HTMLHeadingElement>(null);
   const copyRef = useRef<HTMLSpanElement>(null);
   const [overflowing, setOverflowing] = useState(false);
@@ -62,7 +63,9 @@ export default function TrackInfo({ track }: TrackInfoProps) {
         <p className="truncate" title={track.path}>
           Path: {track.path}
         </p>
-        <p className="truncate">Duration: {formatTime(track.duration)}</p>
+        <p className="truncate">
+          Duration: {formatTime(duration ?? track.duration)}
+        </p>
       </div>
     </section>
   );

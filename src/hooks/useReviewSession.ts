@@ -1,6 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import type { Decision, LibrarySummary, Track } from "../types";
-import { initialSummary, mockTracks } from "../data/mockLibrary";
+
+interface ReviewSessionOptions {
+  tracks: Track[];
+}
 
 interface ReviewSession {
   currentTrack: Track | null;
@@ -11,9 +14,11 @@ interface ReviewSession {
   reset: () => void;
 }
 
-export function useReviewSession(): ReviewSession {
+export function useReviewSession({ tracks }: ReviewSessionOptions): ReviewSession {
   const [cursor, setCursor] = useState(0);
   const [decisions, setDecisions] = useState<Decision[]>([]);
+
+  const trackCount = tracks.length;
 
   const decide = useCallback(
     (decision: Decision) => {
@@ -22,9 +27,9 @@ export function useReviewSession(): ReviewSession {
         next[cursor] = decision;
         return next;
       });
-      setCursor((previous) => Math.min(mockTracks.length, previous + 1));
+      setCursor((previous) => Math.min(trackCount, previous + 1));
     },
-    [cursor],
+    [cursor, trackCount],
   );
 
   const reset = useCallback(() => {
@@ -37,21 +42,19 @@ export function useReviewSession(): ReviewSession {
       .slice(0, cursor)
       .filter((decision): decision is Decision => Boolean(decision));
     return {
-      total: initialSummary.total,
-      reviewed: initialSummary.reviewed + decided.length,
-      kept: initialSummary.kept + decided.filter((d) => d === "keep").length,
-      toDelete:
-        initialSummary.toDelete + decided.filter((d) => d === "delete").length,
-      skipped:
-        initialSummary.skipped + decided.filter((d) => d === "skip").length,
+      total: trackCount,
+      reviewed: decided.length,
+      kept: decided.filter((decision) => decision === "keep").length,
+      toDelete: decided.filter((decision) => decision === "delete").length,
+      skipped: decided.filter((decision) => decision === "skip").length,
     };
-  }, [decisions, cursor]);
+  }, [decisions, cursor, trackCount]);
 
   return {
-    currentTrack: cursor < mockTracks.length ? mockTracks[cursor] : null,
+    currentTrack: cursor < trackCount ? tracks[cursor] : null,
     summary,
     index: cursor,
-    queueLength: mockTracks.length,
+    queueLength: trackCount,
     decide,
     reset,
   };

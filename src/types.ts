@@ -19,3 +19,20 @@ export interface LibrarySummary {
 }
 
 export type ReviewStatus = "empty" | "reviewing" | "complete";
+
+export interface AudioFile {
+  path: string;
+  relativePath: string;
+  name: string;
+  extension: string;
+  size: number;
+  modifiedAt: string;
+}
+
+export interface ScanResult {
+  rootPath: string;
+  scannedAt: string;
+  totalFiles: number;
+  totalSize: number;
+  files: AudioFile[];
+}
