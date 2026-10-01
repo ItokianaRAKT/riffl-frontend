@@ -1,18 +1,24 @@
-import { useRef, type MouseEvent } from "react";
+import { useRef, type MouseEvent, type RefObject } from "react";
 import { formatTime } from "../utils/format";
 
 interface AudioPlayerProps {
+  audioRef: RefObject<HTMLAudioElement | null>;
+  src: string;
   currentTime: number;
   duration: number;
   isPlaying: boolean;
+  error: boolean;
   onSeek: (time: number) => void;
   onToggle: () => void;
 }
 
 export default function AudioPlayer({
+  audioRef,
+  src,
   currentTime,
   duration,
   isPlaying,
+  error,
   onSeek,
   onToggle,
 }: AudioPlayerProps) {
@@ -32,6 +38,7 @@ export default function AudioPlayer({
 
   return (
     <div className="flex w-full max-w-2xl items-center gap-8 px-6">
+      <audio ref={audioRef} src={src} preload="metadata" className="hidden" />
       <div className="min-w-0 flex-1">
         <div
           ref={barRef}
@@ -48,15 +55,22 @@ export default function AudioPlayer({
           />
         </div>
         <div className="mt-3.5 flex items-center justify-between text-[13px] font-medium text-ink tabular-nums">
-          <span>{formatTime(currentTime)}</span>
-          <span>-{formatTime(remaining)}</span>
+          {error ? (
+            <span className="text-alert">Source audio indisponible</span>
+          ) : (
+            <>
+              <span>{formatTime(currentTime)}</span>
+              <span>-{formatTime(remaining)}</span>
+            </>
+          )}
         </div>
       </div>
       <button
         type="button"
         onClick={onToggle}
+        disabled={error}
         aria-label={isPlaying ? "Pause" : "Play"}
-        className="grid h-16 w-16 shrink-0 place-items-center -translate-y-4.5 rounded-full bg-petroleum text-white transition-colors duration-150 hover:bg-[#0f3d4e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:scale-95"
+        className="grid h-16 w-16 shrink-0 place-items-center -translate-y-4.5 rounded-full bg-petroleum text-white transition-colors duration-150 hover:bg-[#0f3d4e] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-petroleum disabled:active:scale-100"
       >
         {isPlaying ? (
           <svg

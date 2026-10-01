@@ -20,10 +20,18 @@ export default function App() {
     reset,
   } = useReviewSession();
   const [screen, setScreen] = useState<"reviewing" | "empty">("reviewing");
-  const { currentTime, isPlaying, seek, toggle } = usePlayback(
-    currentTrack?.duration ?? 0,
-    currentTrack?.id ?? "no-track",
-  );
+
+  const handleTrackEnded = useCallback(() => {
+    if (!currentTrack) return;
+    decide("skip");
+  }, [currentTrack, decide]);
+
+  const { audioRef, currentTime, duration, isPlaying, error, seek, toggle } =
+    usePlayback(
+      currentTrack?.id ?? "no-track",
+      currentTrack?.duration ?? 0,
+      handleTrackEnded,
+    );
 
   const handleDecide = useCallback(
     (decision: Decision) => {
@@ -65,9 +73,12 @@ export default function App() {
           <>
             <TrackInfo track={currentTrack} />
             <AudioPlayer
+              audioRef={audioRef}
+              src={currentTrack.audioUrl}
               currentTime={currentTime}
-              duration={currentTrack.duration}
+              duration={duration}
               isPlaying={isPlaying}
+              error={error}
               onSeek={seek}
               onToggle={toggle}
             />
