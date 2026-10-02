@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import DecisionControls from "./components/DecisionControls";
 import Header from "./components/Header";
 import TrackInfo from "./components/TrackInfo";
@@ -9,7 +9,7 @@ import InitialEmptyState from "./components/InitialEmptyState";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
-import { ApiError, scanFolder, toTrack } from "./api/client";
+import { ApiError, scanFolder, sendAction, toTrack } from "./api/client";
 import type { Decision, Track } from "./types";
 
 export default function App() {
@@ -18,13 +18,37 @@ export default function App() {
   const [folderPath, setFolderPath] = useState("");
   const [scanning, setScanning] = useState(false);
   const [scanError, setScanError] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const actionInFlightRef = useRef(false);
 
   const { currentTrack, summary, decide, reset } = useReviewSession({ tracks });
 
+  const handleDecide = useCallback(
+    async (decision: Decision) => {
+      if (!currentTrack || actionInFlightRef.current) return;
+
+      actionInFlightRef.current = true;
+      try {
+        await sendAction(currentTrack.id, decision);
+        setActionError(null);
+        decide(decision);
+      } catch (actionFailure) {
+        setActionError(
+          actionFailure instanceof ApiError
+            ? actionFailure.message
+            : "Unable to reach the backend.",
+        );
+      } finally {
+        actionInFlightRef.current = false;
+      }
+    },
+    [currentTrack, decide],
+  );
+
   const handleTrackEnded = useCallback(() => {
     if (!currentTrack) return;
-    decide("skip");
-  }, [currentTrack, decide]);
+    handleDecide("skip");
+  }, [currentTrack, handleDecide]);
 
   const { audioRef, currentTime, duration, isPlaying, error, seek, toggle } =
     usePlayback(
@@ -32,14 +56,6 @@ export default function App() {
       currentTrack?.duration ?? 0,
       handleTrackEnded,
     );
-
-  const handleDecide = useCallback(
-    (decision: Decision) => {
-      if (!currentTrack) return;
-      decide(decision);
-    },
-    [currentTrack, decide],
-  );
 
   const isReviewing = screen === "reviewing";
 
@@ -59,6 +75,7 @@ export default function App() {
 
     setScanning(true);
     setScanError(null);
+    setActionError(null);
 
     try {
       const result = await scanFolder(path);
@@ -111,6 +128,11 @@ export default function App() {
               onToggle={toggle}
             />
             <DecisionControls onDecide={handleDecide} />
+            {actionError ? (
+              <p role="alert" className="max-w-md px-6 text-center text-sm font-medium text-alert">
+                {actionError}
+              </p>
+            ) : null}
           </>
         ) : (
           <ReviewComplete

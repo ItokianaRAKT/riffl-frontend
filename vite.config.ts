@@ -10,6 +10,7 @@ export default defineConfig({
     proxy: {
       "/files": backendUrl,
       "/stream": backendUrl,
+      "/action": backendUrl,
     },
   },
 });

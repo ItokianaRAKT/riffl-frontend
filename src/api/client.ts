@@ -1,4 +1,4 @@
-import type { AudioFile, ScanResult, Track } from "../types";
+import type { AudioFile, Decision, ScanResult, Track } from "../types";
 
 interface ApiErrorBody {
   error?: string;
@@ -37,6 +37,30 @@ export async function scanFolder(path: string): Promise<ScanResult> {
   }
 
   return body as unknown as ScanResult;
+}
+
+export async function sendAction(path: string, action: Decision): Promise<void> {
+  let response: Response;
+
+  try {
+    response = await fetch("/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, action }),
+    });
+  } catch {
+    throw new ApiError("Unable to reach the backend.", 0, "NETWORK_ERROR");
+  }
+
+  const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+
+  if (!response.ok) {
+    throw new ApiError(
+      body?.error ?? `Action failed (HTTP ${response.status}).`,
+      response.status,
+      body?.code,
+    );
+  }
 }
 
 export function toTrack(file: AudioFile): Track {
