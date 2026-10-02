@@ -67,6 +67,8 @@ export default function App() {
 
   const handleReviewQueue = useCallback(() => {}, []);
 
+  const handleUndo = useCallback(() => {}, []);
+
   const handleFinishCleanup = useCallback(() => setScreen("empty"), []);
 
   const handleChooseFolder = useCallback(async () => {
@@ -127,7 +129,11 @@ export default function App() {
               onSeek={seek}
               onToggle={toggle}
             />
-            <DecisionControls onDecide={handleDecide} />
+            <DecisionControls
+              onDecide={handleDecide}
+              onUndo={handleUndo}
+              canUndo={summary.reviewed > 0}
+            />
             {actionError ? (
               <p role="alert" className="max-w-md px-6 text-center text-sm font-medium text-alert">
                 {actionError}
