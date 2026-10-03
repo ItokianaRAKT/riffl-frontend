@@ -1,4 +1,10 @@
-import type { AudioFile, Decision, ScanResult, Track } from "../types";
+import type {
+  AudioFile,
+  Decision,
+  ScanResult,
+  Track,
+  UndoResult,
+} from "../types";
 
 interface ApiErrorBody {
   error?: string;
@@ -61,6 +67,28 @@ export async function sendAction(path: string, action: Decision): Promise<void> 
       body?.code,
     );
   }
+}
+
+export async function undoLastAction(): Promise<UndoResult> {
+  let response: Response;
+
+  try {
+    response = await fetch("/action/undo", { method: "POST" });
+  } catch {
+    throw new ApiError("Unable to reach the backend.", 0, "NETWORK_ERROR");
+  }
+
+  const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+
+  if (!response.ok) {
+    throw new ApiError(
+      body?.error ?? `Undo failed (HTTP ${response.status}).`,
+      response.status,
+      body?.code,
+    );
+  }
+
+  return body as unknown as UndoResult;
 }
 
 export function toTrack(file: AudioFile): Track {
