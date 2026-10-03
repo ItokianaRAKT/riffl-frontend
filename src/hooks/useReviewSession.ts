@@ -11,6 +11,7 @@ interface ReviewSession {
   index: number;
   queueLength: number;
   decide: (decision: Decision) => void;
+  undo: () => void;
   reset: () => void;
 }
 
@@ -31,6 +32,14 @@ export function useReviewSession({ tracks }: ReviewSessionOptions): ReviewSessio
     },
     [cursor, trackCount],
   );
+
+  const undo = useCallback(() => {
+    if (cursor === 0) return;
+
+    const previousIndex = cursor - 1;
+    setDecisions((previous) => previous.slice(0, previousIndex));
+    setCursor(previousIndex);
+  }, [cursor]);
 
   const reset = useCallback(() => {
     setCursor(0);
@@ -56,6 +65,7 @@ export function useReviewSession({ tracks }: ReviewSessionOptions): ReviewSessio
     index: cursor,
     queueLength: trackCount,
     decide,
+    undo,
     reset,
   };
 }
