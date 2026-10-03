@@ -9,7 +9,13 @@ import InitialEmptyState from "./components/InitialEmptyState";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
-import { ApiError, scanFolder, sendAction, toTrack } from "./api/client";
+import {
+  ApiError,
+  scanFolder,
+  sendAction,
+  toTrack,
+  undoLastAction,
+} from "./api/client";
 import type { Decision, Track } from "./types";
 
 export default function App() {
@@ -21,7 +27,9 @@ export default function App() {
   const [actionError, setActionError] = useState<string | null>(null);
   const actionInFlightRef = useRef(false);
 
-  const { currentTrack, summary, decide, reset } = useReviewSession({ tracks });
+  const { currentTrack, summary, decide, undo, reset } = useReviewSession({
+    tracks,
+  });
 
   const handleDecide = useCallback(
     async (decision: Decision) => {
@@ -67,7 +75,24 @@ export default function App() {
 
   const handleReviewQueue = useCallback(() => {}, []);
 
-  const handleUndo = useCallback(() => {}, []);
+  const handleUndo = useCallback(async () => {
+    if (actionInFlightRef.current || summary.reviewed === 0) return;
+
+    actionInFlightRef.current = true;
+    try {
+      await undoLastAction();
+      setActionError(null);
+      undo();
+    } catch (undoFailure) {
+      setActionError(
+        undoFailure instanceof ApiError
+          ? undoFailure.message
+          : "Unable to reach the backend.",
+      );
+    } finally {
+      actionInFlightRef.current = false;
+    }
+  }, [summary.reviewed, undo]);
 
   const handleFinishCleanup = useCallback(() => setScreen("empty"), []);
 

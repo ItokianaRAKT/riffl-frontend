@@ -36,3 +36,9 @@ export interface ScanResult {
   totalSize: number;
   files: AudioFile[];
 }
+
+export interface UndoResult {
+  path: string;
+  action: Decision;
+  remaining: number;
+}
