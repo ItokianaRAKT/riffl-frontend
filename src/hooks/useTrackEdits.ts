@@ -41,10 +41,14 @@ export function useTrackEdits(track: Track | null): TrackEdits {
   return {
     title: draft.title,
     artist: draft.artist,
-    setTitle: (value: string) =>
-      setDraft((previous) => ({ ...previous, title: value })),
-    setArtist: (value: string) =>
-      setDraft((previous) => ({ ...previous, artist: value })),
+    setTitle: (value: string) => {
+      setError(null);
+      setDraft((previous) => ({ ...previous, title: value }));
+    },
+    setArtist: (value: string) => {
+      setError(null);
+      setDraft((previous) => ({ ...previous, artist: value }));
+    },
     isDirty,
     error,
     setError,

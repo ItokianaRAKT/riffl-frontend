@@ -9,6 +9,7 @@ interface TrackInfoProps {
   artistValue: string;
   onTitleChange: (value: string) => void;
   onArtistChange: (value: string) => void;
+  editError?: string | null;
 }
 
 const MARQUEE_SEPARATOR = "\u00A0\u00B7\u00A0";
@@ -20,6 +21,7 @@ export default function TrackInfo({
   artistValue,
   onTitleChange,
   onArtistChange,
+  editError,
 }: TrackInfoProps) {
   const wrapRef = useRef<HTMLHeadingElement>(null);
   const copyRef = useRef<HTMLSpanElement>(null);
@@ -111,6 +113,11 @@ export default function TrackInfo({
           Duration: {formatTime(duration ?? track.duration)}
         </p>
       </div>
+      {editError ? (
+        <p role="alert" className="text-sm font-medium text-alert">
+          {editError}
+        </p>
+      ) : null}
     </section>
   );
 }
