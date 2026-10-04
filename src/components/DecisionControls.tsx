@@ -1,5 +1,4 @@
 import type { Decision } from "../types";
-import KeyboardShortcut from "./KeyboardShortcut";
 
 interface DecisionControlsProps {
   onDecide: (decision: Decision) => void;
@@ -10,28 +9,24 @@ interface DecisionControlsProps {
 interface Option {
   decision: Decision;
   label: string;
-  shortcut: string;
   className: string;
 }
 
 const OPTIONS: Option[] = [
   {
-    decision: "keep",
-    label: "Keep",
-    shortcut: "K",
-    className: "bg-petroleum text-white hover:bg-[#0f3d4e] active:bg-[#0c313f]",
+    decision: "delete",
+    label: "Delete",
+    className: "bg-charcoal text-white hover:bg-[#23272b] active:bg-[#1e2225]",
   },
   {
     decision: "skip",
     label: "Skip",
-    shortcut: "S",
     className: "bg-muted text-ink hover:bg-[#a3acb3] active:bg-[#97a0a8]",
   },
   {
-    decision: "delete",
-    label: "Delete",
-    shortcut: "D",
-    className: "bg-charcoal text-white hover:bg-[#23272b] active:bg-[#1e2225]",
+    decision: "keep",
+    label: "Keep",
+    className: "bg-petroleum text-white hover:bg-[#0f3d4e] active:bg-[#0c313f]",
   },
 ];
 
@@ -55,7 +50,6 @@ export default function DecisionControls({
             >
               {option.label}
             </button>
-            <KeyboardShortcut keys={[option.shortcut]} />
           </div>
         ))}
       </div>
