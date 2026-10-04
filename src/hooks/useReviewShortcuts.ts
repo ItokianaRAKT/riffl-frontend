@@ -8,9 +8,9 @@ interface ShortcutHandlers {
 }
 
 const DECISION_KEYS: Record<string, Decision> = {
-  k: "keep",
-  s: "skip",
-  d: "delete",
+  arrowleft: "delete",
+  arrowdown: "skip",
+  arrowright: "keep",
 };
 
 export function useReviewShortcuts({
