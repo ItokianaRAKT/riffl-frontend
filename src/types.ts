@@ -42,3 +42,10 @@ export interface UndoResult {
   action: Decision;
   remaining: number;
 }
+
+export interface RenameResult {
+  path: string;
+  previousPath: string;
+  title: string;
+  artist: string | null;
+}
