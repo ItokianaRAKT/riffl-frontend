@@ -67,10 +67,15 @@ export default function App() {
 
   const isReviewing = screen === "reviewing";
 
+  const handleSeekForward = useCallback(() => {
+    seek(currentTime + 15);
+  }, [seek, currentTime]);
+
   useReviewShortcuts({
     enabled: isReviewing && Boolean(currentTrack),
     onDecide: handleDecide,
     onTogglePlayback: toggle,
+    onSeekForward: handleSeekForward,
   });
 
   const handleReviewQueue = useCallback(() => {}, []);

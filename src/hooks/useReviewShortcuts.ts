@@ -5,6 +5,7 @@ interface ShortcutHandlers {
   enabled: boolean;
   onDecide: (decision: Decision) => void;
   onTogglePlayback: () => void;
+  onSeekForward: () => void;
 }
 
 const DECISION_KEYS: Record<string, Decision> = {
@@ -17,6 +18,7 @@ export function useReviewShortcuts({
   enabled,
   onDecide,
   onTogglePlayback,
+  onSeekForward,
 }: ShortcutHandlers) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -37,10 +39,16 @@ export function useReviewShortcuts({
       if (key === "enter") {
         event.preventDefault();
         onTogglePlayback();
+        return;
+      }
+
+      if (key === " ") {
+        event.preventDefault();
+        onSeekForward();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [enabled, onDecide, onTogglePlayback]);
+  }, [enabled, onDecide, onTogglePlayback, onSeekForward]);
 }
