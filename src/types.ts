@@ -4,6 +4,7 @@ export interface Track {
   id: string;
   title: string;
   artist: string;
+  extension: string;
   path: string;
   duration: number;
   audioUrl: string;
@@ -24,6 +25,8 @@ export interface AudioFile {
   path: string;
   relativePath: string;
   name: string;
+  title: string;
+  artist: string | null;
   extension: string;
   size: number;
   modifiedAt: string;

@@ -129,8 +129,9 @@ export async function undoLastAction(): Promise<UndoResult> {
 export function toTrack(file: AudioFile): Track {
   return {
     id: file.path,
-    title: file.name,
-    artist: "Unknown Artist",
+    title: file.title,
+    artist: file.artist ?? "",
+    extension: file.extension,
     path: file.relativePath,
     duration: 0,
     audioUrl: `/stream?path=${encodeURIComponent(file.path)}`,
