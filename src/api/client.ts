@@ -1,6 +1,7 @@
 import type {
   AudioFile,
   Decision,
+  RenameResult,
   ScanResult,
   Track,
   UndoResult,
@@ -69,6 +70,40 @@ export async function sendAction(path: string, action: Decision): Promise<void> 
   }
 }
 
+export async function renameTrack(
+  path: string,
+  title: string,
+  artist?: string,
+): Promise<RenameResult> {
+  let response: Response;
+
+  try {
+    response = await fetch("/action/rename", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        path,
+        title,
+        ...(artist !== undefined && { artist }),
+      }),
+    });
+  } catch {
+    throw new ApiError("Unable to reach the backend.", 0, "NETWORK_ERROR");
+  }
+
+  const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+
+  if (!response.ok) {
+    throw new ApiError(
+      body?.error ?? `Rename failed (HTTP ${response.status}).`,
+      response.status,
+      body?.code,
+    );
+  }
+
+  return body as unknown as RenameResult;
+}
+
 export async function undoLastAction(): Promise<UndoResult> {
   let response: Response;
 
@@ -94,8 +129,9 @@ export async function undoLastAction(): Promise<UndoResult> {
 export function toTrack(file: AudioFile): Track {
   return {
     id: file.path,
-    title: file.name,
-    artist: "Unknown Artist",
+    title: file.title,
+    artist: file.artist ?? "",
+    extension: file.extension,
     path: file.relativePath,
     duration: 0,
     audioUrl: `/stream?path=${encodeURIComponent(file.path)}`,

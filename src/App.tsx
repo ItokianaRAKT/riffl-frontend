@@ -9,14 +9,27 @@ import InitialEmptyState from "./components/InitialEmptyState";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
+import { useTrackEdits } from "./hooks/useTrackEdits";
 import {
   ApiError,
+  renameTrack,
   scanFolder,
   sendAction,
   toTrack,
   undoLastAction,
 } from "./api/client";
-import type { Decision, Track } from "./types";
+import type { Decision, RenameResult, Track } from "./types";
+
+function fileNameOf(filePath: string): string {
+  const separatorIndex = Math.max(
+    filePath.lastIndexOf("/"),
+    filePath.lastIndexOf("\\"),
+  );
+
+  return separatorIndex === -1
+    ? filePath
+    : filePath.slice(separatorIndex + 1);
+}
 
 export default function App() {
   const [screen, setScreen] = useState<"reviewing" | "empty">("empty");
@@ -31,26 +44,88 @@ export default function App() {
     tracks,
   });
 
+  const trackEdits = useTrackEdits(currentTrack);
+
+  const applyRename = useCallback((track: Track, result: RenameResult) => {
+    const previousName = fileNameOf(track.id);
+    const nextRelativePath = `${track.path.slice(
+      0,
+      track.path.length - previousName.length,
+    )}${fileNameOf(result.path)}`;
+
+    setTracks((previous) =>
+      previous.map((entry) =>
+        entry.id === track.id
+          ? {
+              ...entry,
+              id: result.path,
+              path: nextRelativePath,
+              title: result.title,
+              artist: result.artist ?? entry.artist,
+              audioUrl: `/stream?path=${encodeURIComponent(result.path)}`,
+            }
+          : entry,
+      ),
+    );
+  }, []);
+
   const handleDecide = useCallback(
     async (decision: Decision) => {
       if (!currentTrack || actionInFlightRef.current) return;
 
+      const editedTitle = trackEdits.title.trim();
+      const editedArtist = trackEdits.artist.trim();
+
+      if (trackEdits.isDirty && !editedTitle) {
+        trackEdits.setError("A valid title is required.");
+        return;
+      }
+
       actionInFlightRef.current = true;
+      let renameResult: RenameResult | null = null;
+
       try {
-        await sendAction(currentTrack.id, decision);
+        if (trackEdits.isDirty) {
+          try {
+            renameResult = await renameTrack(
+              currentTrack.id,
+              editedTitle,
+              editedArtist || undefined,
+            );
+          } catch (renameFailure) {
+            trackEdits.setError(
+              renameFailure instanceof ApiError
+                ? renameFailure.message
+                : "Unable to reach the backend.",
+            );
+            return;
+          }
+
+          trackEdits.setError(null);
+        }
+
+        try {
+          await sendAction(renameResult?.path ?? currentTrack.id, decision);
+        } catch (actionFailure) {
+          setActionError(
+            actionFailure instanceof ApiError
+              ? actionFailure.message
+              : "Unable to reach the backend.",
+          );
+          return;
+        }
+
         setActionError(null);
         decide(decision);
-      } catch (actionFailure) {
-        setActionError(
-          actionFailure instanceof ApiError
-            ? actionFailure.message
-            : "Unable to reach the backend.",
-        );
       } finally {
         actionInFlightRef.current = false;
+
+        if (renameResult) {
+          applyRename(currentTrack, renameResult);
+        }
       }
     },
-    [currentTrack, decide],
+    [currentTrack, decide, trackEdits, applyRename],
   );
 
   const handleTrackEnded = useCallback(() => {
@@ -143,7 +218,15 @@ export default function App() {
           />
         ) : currentTrack ? (
           <>
-            <TrackInfo track={currentTrack} duration={duration} />
+            <TrackInfo
+              track={currentTrack}
+              duration={duration}
+              titleValue={trackEdits.title}
+              artistValue={trackEdits.artist}
+              onTitleChange={trackEdits.setTitle}
+              onArtistChange={trackEdits.setArtist}
+              editError={trackEdits.error}
+            />
             <AudioPlayer
               audioRef={audioRef}
               src={currentTrack.audioUrl}
