@@ -9,6 +9,7 @@ import InitialEmptyState from "./components/InitialEmptyState";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReviewSession } from "./hooks/useReviewSession";
 import { useReviewShortcuts } from "./hooks/useReviewShortcuts";
+import { useTrackEdits } from "./hooks/useTrackEdits";
 import {
   ApiError,
   scanFolder,
@@ -30,6 +31,8 @@ export default function App() {
   const { currentTrack, summary, decide, undo, reset } = useReviewSession({
     tracks,
   });
+
+  const trackEdits = useTrackEdits(currentTrack);
 
   const handleDecide = useCallback(
     async (decision: Decision) => {
@@ -143,7 +146,14 @@ export default function App() {
           />
         ) : currentTrack ? (
           <>
-            <TrackInfo track={currentTrack} duration={duration} />
+            <TrackInfo
+              track={currentTrack}
+              duration={duration}
+              titleValue={trackEdits.title}
+              artistValue={trackEdits.artist}
+              onTitleChange={trackEdits.setTitle}
+              onArtistChange={trackEdits.setArtist}
+            />
             <AudioPlayer
               audioRef={audioRef}
               src={currentTrack.audioUrl}
