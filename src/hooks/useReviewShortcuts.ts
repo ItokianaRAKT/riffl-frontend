@@ -34,7 +34,7 @@ export function useReviewShortcuts({
         return;
       }
 
-      if (key === " ") {
+      if (key === "enter") {
         event.preventDefault();
         onTogglePlayback();
       }
