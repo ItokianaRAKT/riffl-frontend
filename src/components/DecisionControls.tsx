@@ -14,9 +14,9 @@ interface Option {
 
 const OPTIONS: Option[] = [
   {
-    decision: "keep",
-    label: "Keep",
-    className: "bg-petroleum text-white hover:bg-[#0f3d4e] active:bg-[#0c313f]",
+    decision: "delete",
+    label: "Delete",
+    className: "bg-charcoal text-white hover:bg-[#23272b] active:bg-[#1e2225]",
   },
   {
     decision: "skip",
@@ -24,9 +24,9 @@ const OPTIONS: Option[] = [
     className: "bg-muted text-ink hover:bg-[#a3acb3] active:bg-[#97a0a8]",
   },
   {
-    decision: "delete",
-    label: "Delete",
-    className: "bg-charcoal text-white hover:bg-[#23272b] active:bg-[#1e2225]",
+    decision: "keep",
+    label: "Keep",
+    className: "bg-petroleum text-white hover:bg-[#0f3d4e] active:bg-[#0c313f]",
   },
 ];
 
