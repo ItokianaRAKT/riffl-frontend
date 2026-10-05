@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import TrackCover from "./TrackCover";
 import type { Track } from "../types";
 import { formatTime } from "../utils/format";
 
@@ -46,78 +47,83 @@ export default function TrackInfo({
     "w-64 max-w-full border-b border-transparent bg-transparent px-1 text-center text-ink placeholder:text-ink/40 outline-none transition-colors duration-150 hover:border-[#172026]/20 focus:border-petroleum";
 
   return (
-    <section className="flex min-h-44 w-full max-w-3xl flex-col justify-center gap-6 px-6 text-center">
-      <h1
-        ref={wrapRef}
-        title={titleValue}
-        className="flex overflow-hidden justify-center-safe text-[30px] leading-[1.12] font-semibold tracking-[-0.025em] text-charcoal sm:text-4xl lg:text-[42px]"
-      >
-        <span
-          className={`flex w-max shrink-0 whitespace-nowrap will-change-transform ${
-            overflowing ? "animate-title-marquee" : ""
-          }`}
+    <section className="relative flex min-h-44 w-full max-w-6xl flex-col items-center justify-center gap-8 px-6 text-center">
+      <div className="flex w-full min-w-0 flex-col justify-center gap-6 lg:pr-[224px]">
+        <h1
+          ref={wrapRef}
+          title={titleValue}
+          className="flex overflow-hidden justify-center-safe text-[30px] leading-[1.12] font-semibold tracking-[-0.025em] text-charcoal sm:text-4xl lg:text-[42px]"
         >
-          <span ref={copyRef} className="shrink-0">
-            {titleValue}
-            <span
-              aria-hidden="true"
-              className={overflowing ? undefined : "hidden"}
-            >
-              {MARQUEE_SEPARATOR}
-            </span>
-          </span>
-          {overflowing ? (
-            <span aria-hidden="true" className="shrink-0">
+          <span
+            className={`flex w-max shrink-0 whitespace-nowrap will-change-transform ${
+              overflowing ? "animate-title-marquee" : ""
+            }`}
+          >
+            <span ref={copyRef} className="shrink-0">
               {titleValue}
-              {MARQUEE_SEPARATOR}
+              <span
+                aria-hidden="true"
+                className={overflowing ? undefined : "hidden"}
+              >
+                {MARQUEE_SEPARATOR}
+              </span>
             </span>
-          ) : null}
-        </span>
-      </h1>
-      <div className="space-y-1.5 text-[15px] leading-relaxed text-ink-soft">
-        <p className="flex items-baseline justify-center gap-1.5">
-          <label htmlFor="track-title" className="shrink-0">
-            Title:
-          </label>
-          <input
-            id="track-title"
-            type="text"
-            value={titleValue}
-            onChange={(event) => onTitleChange(event.target.value)}
-            autoComplete="off"
-            spellCheck={false}
-            className={fieldClassName}
-          />
-          <span aria-hidden="true" className="shrink-0 text-ink/50">
-            .{track.extension}
+            {overflowing ? (
+              <span aria-hidden="true" className="shrink-0">
+                {titleValue}
+                {MARQUEE_SEPARATOR}
+              </span>
+            ) : null}
           </span>
-        </p>
-        <p className="flex items-baseline justify-center gap-1.5">
-          <label htmlFor="track-artist" className="shrink-0">
-            Artist:
-          </label>
-          <input
-            id="track-artist"
-            type="text"
-            value={artistValue}
-            onChange={(event) => onArtistChange(event.target.value)}
-            placeholder="Unknown artist"
-            autoComplete="off"
-            className={fieldClassName}
-          />
-        </p>
-        <p className="truncate" title={track.path}>
-          Path: {track.path}
-        </p>
-        <p className="truncate">
-          Duration: {formatTime(duration ?? track.duration)}
-        </p>
+        </h1>
+        <div className="space-y-1.5 text-[15px] leading-relaxed text-ink-soft">
+          <p className="flex items-baseline justify-center gap-1.5">
+            <label htmlFor="track-title" className="shrink-0">
+              Title:
+            </label>
+            <input
+              id="track-title"
+              type="text"
+              value={titleValue}
+              onChange={(event) => onTitleChange(event.target.value)}
+              autoComplete="off"
+              spellCheck={false}
+              className={fieldClassName}
+            />
+            <span aria-hidden="true" className="shrink-0 text-ink/50">
+              .{track.extension}
+            </span>
+          </p>
+          <p className="flex items-baseline justify-center gap-1.5">
+            <label htmlFor="track-artist" className="shrink-0">
+              Artist:
+            </label>
+            <input
+              id="track-artist"
+              type="text"
+              value={artistValue}
+              onChange={(event) => onArtistChange(event.target.value)}
+              placeholder="Unknown artist"
+              autoComplete="off"
+              className={fieldClassName}
+            />
+          </p>
+          <p className="truncate" title={track.path}>
+            Path: {track.path}
+          </p>
+          <p className="truncate">
+            Duration: {formatTime(duration ?? track.duration)}
+          </p>
+        </div>
+        {editError ? (
+          <p role="alert" className="text-sm font-medium text-alert">
+            {editError}
+          </p>
+        ) : null}
       </div>
-      {editError ? (
-        <p role="alert" className="text-sm font-medium text-alert">
-          {editError}
-        </p>
-      ) : null}
+      <div className="lg:absolute lg:right-6 lg:top-1/2 lg:-translate-y-1/2 xl:right-[max(calc(1.5rem_-_3cm),calc((1152px_-_100vw)/2_+_16px))] xl:top-[calc(50%_+_2cm)]">
+        <TrackCover track={track} />
+      </div>
     </section>
   );
 }
