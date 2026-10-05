@@ -50,7 +50,7 @@ export default function TrackInfo({
       <h1
         ref={wrapRef}
         title={titleValue}
-        className="flex overflow-hidden justify-center-safe text-[30px] leading-[1.12] font-semibold tracking-[-0.025em] text-ink sm:text-4xl lg:text-[42px]"
+        className="flex overflow-hidden justify-center-safe text-[30px] leading-[1.12] font-semibold tracking-[-0.025em] text-charcoal sm:text-4xl lg:text-[42px]"
       >
         <span
           className={`flex w-max shrink-0 whitespace-nowrap will-change-transform ${
