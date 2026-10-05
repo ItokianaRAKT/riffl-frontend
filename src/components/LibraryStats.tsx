@@ -13,12 +13,6 @@ export default function LibraryStats({ summary }: LibraryStatsProps) {
           <span className="tabular-nums">To delete: {summary.toDelete}</span>
           <span className="tabular-nums">Skipped: {summary.skipped}</span>
         </div>
-        <button
-          type="button"
-          className="cursor-pointer text-sm font-medium text-petroleum underline decoration-[#164e63]/40 underline-offset-4 transition-colors duration-150 hover:decoration-[#164e63] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum"
-        >
-          Review deletion queue ({summary.toDelete} tracks)
-        </button>
       </div>
     </footer>
   );
