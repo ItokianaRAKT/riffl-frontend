@@ -53,7 +53,7 @@ npm install        # download the dependencies (only the first time)
 npm run dev        # start the dev server
 ```
 
-**4. Open the app** — go to the URL printed in the terminal (by default `http://localhost:5173`), then pick your music folder: click **Browse…** to navigate the folders of the machine running the backend, or type the absolute path yourself (for example `/home/you/Music` or `C:\Users\you\Music`). Press **Choose folder** to start reviewing.
+**4. Open the app** — go to the URL printed in the terminal (by default `http://localhost:5173`), then pick your music folder: click **Select** to open the folder explorer overlaid on the page, or type the absolute path yourself (for example `/home/you/Music` or `C:\Users\you\Music`). Press **Choose folder** to start reviewing.
 
 ## Configuration
 
