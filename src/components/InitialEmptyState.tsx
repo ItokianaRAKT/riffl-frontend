@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { ApiError, pickDirectory } from "../api/client";
 import FolderPicker from "./FolderPicker";
 
 interface InitialEmptyStateProps {
@@ -17,11 +18,42 @@ export default function InitialEmptyState({
   onSubmit,
 }: InitialEmptyStateProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [picking, setPicking] = useState(false);
+  const [pickError, setPickError] = useState<string | null>(null);
+
+  const errorMessage = pickError ?? error;
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (scanning || !value.trim()) return;
     onSubmit();
+  };
+
+  const handleSelectFolder = async () => {
+    if (scanning || picking) return;
+
+    setPicking(true);
+    setPickError(null);
+
+    try {
+      const path = await pickDirectory();
+      if (path) {
+        onChange(path);
+      }
+    } catch (failure) {
+      if (failure instanceof ApiError && failure.code === "PICKER_UNAVAILABLE") {
+        // No dialog tool on this machine: fall back to the in-app browser.
+        setPickerOpen(true);
+      } else {
+        setPickError(
+          failure instanceof ApiError
+            ? failure.message
+            : "Unable to reach the backend.",
+        );
+      }
+    } finally {
+      setPicking(false);
+    }
   };
 
   return (
@@ -55,11 +87,11 @@ export default function InitialEmptyState({
           />
           <button
             type="button"
-            onClick={() => setPickerOpen(true)}
-            disabled={scanning}
-            className="h-14 shrink-0 cursor-pointer rounded-lg border border-[#172026]/15 bg-white px-6 text-sm font-bold tracking-[0.1em] uppercase text-ink transition-colors duration-150 hover:bg-[#172026]/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-y-0"
+            onClick={() => void handleSelectFolder()}
+            disabled={scanning || picking}
+            className="h-14 shrink-0 cursor-pointer rounded-lg border border-petroleum/40 bg-white px-6 text-sm font-bold tracking-[0.1em] uppercase text-petroleum transition-colors duration-150 hover:bg-petroleum/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-y-0"
           >
-            Browse…
+            {picking ? "Opening…" : "Select"}
           </button>
         </div>
         <button
@@ -71,9 +103,12 @@ export default function InitialEmptyState({
         </button>
       </form>
 
-      {error ? (
-        <p role="alert" className="mt-6 max-w-md text-sm font-medium text-alert">
-          {error}
+      {errorMessage ? (
+        <p
+          role="alert"
+          className="mt-6 max-w-md text-sm font-medium text-alert"
+        >
+          {errorMessage}
         </p>
       ) : null}
 
