@@ -1,6 +1,7 @@
 import type {
   AudioFile,
   Decision,
+  DirectoryListing,
   RenameResult,
   ScanResult,
   Track,
@@ -44,6 +45,31 @@ export async function scanFolder(path: string): Promise<ScanResult> {
   }
 
   return body as unknown as ScanResult;
+}
+
+export async function listDirectories(path?: string): Promise<DirectoryListing> {
+  let response: Response;
+
+  const query =
+    path === undefined ? "" : `?path=${encodeURIComponent(path)}`;
+
+  try {
+    response = await fetch(`/files/directories${query}`);
+  } catch {
+    throw new ApiError("Unable to reach the backend.", 0, "NETWORK_ERROR");
+  }
+
+  const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
+
+  if (!response.ok) {
+    throw new ApiError(
+      body?.error ?? `Directory listing failed (HTTP ${response.status}).`,
+      response.status,
+      body?.code,
+    );
+  }
+
+  return body as unknown as DirectoryListing;
 }
 
 export async function sendAction(path: string, action: Decision): Promise<void> {

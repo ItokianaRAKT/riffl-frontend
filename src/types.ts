@@ -40,6 +40,17 @@ export interface ScanResult {
   files: AudioFile[];
 }
 
+export interface DirectoryEntry {
+  name: string;
+  path: string;
+}
+
+export interface DirectoryListing {
+  path: string;
+  parent: string | null;
+  directories: DirectoryEntry[];
+}
+
 export interface UndoResult {
   path: string;
   action: Decision;
