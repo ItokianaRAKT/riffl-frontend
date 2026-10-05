@@ -29,7 +29,7 @@ export default function InitialEmptyState({
       <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-0.025em] text-ink sm:text-[44px]">
         Start with a music folder
       </h1>
-      <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink">
+      <p className="mt-6 max-w-md text-[15px] leading-relaxed text-ink-soft">
         Browse to a local folder or enter its path, and Riffl will scan your
         music files.
       </p>

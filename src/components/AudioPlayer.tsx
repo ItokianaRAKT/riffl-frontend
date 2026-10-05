@@ -54,7 +54,7 @@ export default function AudioPlayer({
             style={{ left: `${progress}%` }}
           />
         </div>
-        <div className="mt-3.5 flex items-center justify-between text-[13px] font-medium text-ink tabular-nums">
+        <div className="mt-3.5 flex items-center justify-between text-[13px] font-medium text-ink-soft tabular-nums">
           {error ? (
             <span className="text-alert">Source audio indisponible</span>
           ) : (
