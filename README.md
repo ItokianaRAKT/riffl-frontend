@@ -6,7 +6,7 @@ This repository contains the client only. It is not deployed anywhere: you run i
 
 ## Features
 
-- Scan a folder by absolute path and load every audio file it contains (recursively).
+- Browse folders with the built-in picker (or type the absolute path) and load every audio file they contain (recursively).
 - Play the current track (streamed, with seeking) while reviewing the queue.
 - Sort each track with **Keep**, **Skip**, or **Delete**; files are moved by the backend.
 - Undo the last decision.
@@ -53,7 +53,7 @@ npm install        # download the dependencies (only the first time)
 npm run dev        # start the dev server
 ```
 
-**4. Open the app** — go to the URL printed in the terminal (by default `http://localhost:5173`), type the absolute path of a music folder (for example `/home/you/Music` or `C:\Users\you\Music`), then submit it to start reviewing.
+**4. Open the app** — go to the URL printed in the terminal (by default `http://localhost:5173`), then pick your music folder: click **Browse…** to navigate the folders of the machine running the backend, or type the absolute path yourself (for example `/home/you/Music` or `C:\Users\you\Music`). Press **Choose folder** to start reviewing.
 
 ## Configuration
 
