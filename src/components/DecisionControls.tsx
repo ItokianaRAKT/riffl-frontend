@@ -1,3 +1,4 @@
+import LucideIcon from "./LucideIcon";
 import type { Decision } from "../types";
 
 interface DecisionControlsProps {
@@ -9,6 +10,7 @@ interface DecisionControlsProps {
 interface Option {
   decision: Decision;
   label: string;
+  icon: string;
   className: string;
 }
 
@@ -16,16 +18,19 @@ const OPTIONS: Option[] = [
   {
     decision: "delete",
     label: "Delete",
+    icon: "trash-2",
     className: "bg-charcoal text-white hover:bg-[#23272b] active:bg-[#1e2225]",
   },
   {
     decision: "skip",
     label: "Skip",
+    icon: "skip-forward",
     className: "bg-muted text-ink hover:bg-[#a3acb3] active:bg-[#97a0a8]",
   },
   {
     decision: "keep",
     label: "Keep",
+    icon: "check",
     className: "bg-petroleum text-white hover:bg-[#0f3d4e] active:bg-[#0c313f]",
   },
 ];
@@ -46,8 +51,9 @@ export default function DecisionControls({
             <button
               type="button"
               onClick={() => onDecide(option.decision)}
-              className={`h-14 flex-1 cursor-pointer rounded-lg text-sm font-bold tracking-[0.1em] uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px sm:w-full sm:flex-none ${option.className}`}
+              className={`flex h-14 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-lg text-sm font-bold tracking-[0.1em] uppercase transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-petroleum active:translate-y-px sm:w-full sm:flex-none ${option.className}`}
             >
+              <LucideIcon name={option.icon} className="h-[18px] w-[18px]" />
               {option.label}
             </button>
           </div>
