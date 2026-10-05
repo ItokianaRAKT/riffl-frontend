@@ -101,7 +101,7 @@ export default function FolderPicker({ onSelect, onClose }: FolderPickerProps) {
         aria-modal="true"
         aria-labelledby="folder-picker-title"
         tabIndex={-1}
-        className="flex max-h-[75vh] w-full max-w-md flex-col overflow-hidden rounded-lg bg-white shadow-xl focus:outline-none"
+        className="flex max-h-[65vh] w-full max-w-sm flex-col overflow-hidden rounded-lg bg-white shadow-xl focus:outline-none"
       >
         <div className="flex items-start justify-between gap-4 border-b border-[#172026]/10 px-5 py-4">
           <div className="min-w-0">

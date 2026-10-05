@@ -72,30 +72,6 @@ export async function listDirectories(path?: string): Promise<DirectoryListing> 
   return body as unknown as DirectoryListing;
 }
 
-export async function pickDirectory(): Promise<string | null> {
-  let response: Response;
-
-  try {
-    response = await fetch("/files/pick-directory", { method: "POST" });
-  } catch {
-    throw new ApiError("Unable to reach the backend.", 0, "NETWORK_ERROR");
-  }
-
-  const body = (await response.json().catch(() => null)) as
-    | (ApiErrorBody & { path?: string | null })
-    | null;
-
-  if (!response.ok) {
-    throw new ApiError(
-      body?.error ?? `Folder dialog failed (HTTP ${response.status}).`,
-      response.status,
-      body?.code,
-    );
-  }
-
-  return typeof body?.path === "string" && body.path ? body.path : null;
-}
-
 export async function sendAction(path: string, action: Decision): Promise<void> {
   let response: Response;
 
