@@ -112,7 +112,7 @@ export default function FolderPicker({ onSelect, onClose }: FolderPickerProps) {
               Choose a folder
             </h2>
             <p
-              className="mt-1 truncate text-sm text-ink/60"
+              className="mt-1 truncate text-sm text-ink-soft"
               title={listing?.path}
             >
               {listing?.path ?? "…"}
@@ -142,7 +142,7 @@ export default function FolderPicker({ onSelect, onClose }: FolderPickerProps) {
               </button>
             </div>
           ) : loading && !listing ? (
-            <p className="px-4 py-6 text-center text-sm text-ink/60">
+            <p className="px-4 py-6 text-center text-sm text-ink-soft">
               Loading…
             </p>
           ) : listing && listing.directories.length > 0 ? (
@@ -161,7 +161,7 @@ export default function FolderPicker({ onSelect, onClose }: FolderPickerProps) {
               ))}
             </ul>
           ) : (
-            <p className="px-4 py-6 text-center text-sm text-ink/60">
+            <p className="px-4 py-6 text-center text-sm text-ink-soft">
               No subfolders here.
             </p>
           )}

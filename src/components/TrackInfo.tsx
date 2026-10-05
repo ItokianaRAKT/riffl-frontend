@@ -74,7 +74,7 @@ export default function TrackInfo({
           ) : null}
         </span>
       </h1>
-      <div className="space-y-1.5 text-[15px] leading-relaxed text-ink">
+      <div className="space-y-1.5 text-[15px] leading-relaxed text-ink-soft">
         <p className="flex items-baseline justify-center gap-1.5">
           <label htmlFor="track-title" className="shrink-0">
             Title:

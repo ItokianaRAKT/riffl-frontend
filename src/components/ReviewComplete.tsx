@@ -37,10 +37,10 @@ export default function ReviewComplete({
       <h1 className="text-[32px] leading-[1.1] font-semibold tracking-[-0.025em] text-ink sm:text-[44px]">
         Library reviewed
       </h1>
-      <p className="mt-5 text-[15px] font-medium text-ink tabular-nums">
+      <p className="mt-5 text-[15px] font-medium text-ink-soft tabular-nums">
         {summary.total} tracks processed
       </p>
-      <div className="mt-9 space-y-2.5 text-[15px] text-ink tabular-nums">
+      <div className="mt-9 space-y-2.5 text-[15px] text-ink-soft tabular-nums">
         <p>
           <span className="font-semibold">{summary.kept}</span> kept
         </p>

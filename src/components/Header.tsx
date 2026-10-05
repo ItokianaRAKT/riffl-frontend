@@ -13,7 +13,7 @@ export default function Header({ reviewed, total }: HeaderProps) {
         riffl
       </span>
       {reviewed !== undefined && total !== undefined ? (
-        <p className="text-sm font-medium text-ink tabular-nums sm:text-base">
+        <p className="text-sm font-medium text-ink-soft tabular-nums sm:text-base">
           {reviewed} / {total} tracks reviewed
         </p>
       ) : null}
