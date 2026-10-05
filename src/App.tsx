@@ -63,6 +63,7 @@ export default function App() {
               title: result.title,
               artist: result.artist ?? entry.artist,
               audioUrl: `/stream?path=${encodeURIComponent(result.path)}`,
+              coverUrl: `/cover?path=${encodeURIComponent(result.path)}`,
             }
           : entry,
       ),
