@@ -161,6 +161,7 @@ export function toTrack(file: AudioFile): Track {
     path: file.relativePath,
     duration: 0,
     audioUrl: `/stream?path=${encodeURIComponent(file.path)}`,
+    coverUrl: `/cover?path=${encodeURIComponent(file.path)}`,
     decision: null,
   };
 }

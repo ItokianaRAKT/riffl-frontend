@@ -8,6 +8,7 @@ export interface Track {
   path: string;
   duration: number;
   audioUrl: string;
+  coverUrl: string;
   decision: Decision | null;
 }
 
